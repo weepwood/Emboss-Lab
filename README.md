@@ -1,0 +1,33 @@
+# Emboss Lab — 浮雕海报交互网页
+
+根据五张视觉参考重新绘制的单页网页 Demo：渐变纸张、凹刻文字、线条压印、微颗粒纸纹、鼠标漫反射聚光与五组独立 SVG 画面。
+
+## 运行
+
+1. 解压整个目录，保留 `index.html` 和 `assets/grain.svg` 相对路径。
+2. 双击 `index.html`，在现代浏览器中打开即可，完全不需要服务器、安装依赖或联网。
+3. 若需要本地服务器，可在此目录执行：`python -m http.server 8000`，打开 `http://localhost:8000`。
+
+## 操作
+
+- 页面右侧或移动端下方切换 5 种海报。
+- 通过参数滑杆调整**浮雕深度、颗粒密度、漫反射光**。
+- 将鼠标移到海报上，光斑跟随指针。
+- `←`/`→` 或数字 `1`–`5` 快速切换主题；按 `F` 进入/退出沉浸模式；按 `Esc` 退出。
+- 随机按钮会切换到另一张海报。
+
+## 技术实现
+
+- **纸张**：多层 `radial-gradient` 和 `linear-gradient` 叠加。
+- **颗粒**：SVG feTurbulence 程序化灰度噪声覆盖，`mix-blend-mode:soft-light`。
+- **压印**：SVG 矢量路径和文字，两组方向相反的 `drop-shadow` 形成浅色反光面和暗色切边；全局 `--depth` 控制起伏强弱。
+- **光照**：鼠标位置驱动 CSS 自定义属性，移动 `radial-gradient` 高光。
+- **字体**：ADSTRONAUT 标题为自绘几何矢量字形；其他内容使用系统字体；无外部字体和 JavaScript 依赖。
+- **可访问性**：键盘切换、焦点可见、`prefers-reduced-motion` 支持。
+
+该 Demo 是独立的视觉复现，不包含原图本身，所有压印形状均为网页中可修改的矢量元素。原图包含更细腻的材质物理细节；网页实现是实时渲染的设计近似，而不是逐像素 1:1 复制。
+## 部署到 GitHub Pages
+
+本项目是零构建的静态网页。公开仓库可以在 **Settings → Pages** 中选择 **Deploy from a branch**，分支选 `main`，目录选 `/(root)`，保存后即可通过 GitHub Pages 访问。
+
+GitHub 仓库：https://github.com/weepwood/Emboss-Lab
