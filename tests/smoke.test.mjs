@@ -105,7 +105,7 @@ test('从内联样式拆分后仍保留必要的响应式布局基础', () => {
     '品牌水平排列': /\.brand\s*\{[^}]*display:\s*inline-flex/,
     '主工作区网格': /\.workspace\s*\{[^}]*display:\s*grid/,
     '设置侧栏纵向布局': /\.studio-sidebar\s*\{[^}]*display:\s*flex/,
-    '作品列表纵向布局': /\.scene-menu\s*\{[^}]*display:\s*flex/,
+    '作品色卡网格': /\.scene-menu\s*\{[^}]*display:\s*grid/,
     '作品按钮水平布局': /\.scene-select\s*\{[^}]*display:\s*flex/,
     '作品预览色块': /\.swatch\.dusk\s*\{[^}]*background:/,
     '窄屏单栏布局': /@media \(max-width: 800px\)[\s\S]*?\.workspace\s*\{[^}]*flex-direction:\s*column/,
@@ -114,4 +114,16 @@ test('从内联样式拆分后仍保留必要的响应式布局基础', () => {
   for (const [name, pattern] of Object.entries(required)) {
     assert.match(css, pattern, name + ' 的样式缺失');
   }
+});
+
+
+test('新工作台采用双区布局、紧凑色卡和统一的主操作层级', () => {
+  assert.match(css, /--ui-inspector-width:\s*360px/);
+  assert.match(css, /\.workspace\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+var\(--ui-inspector-width\)/);
+  assert.match(css, /\.scene-menu\s*\{[^}]*grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(css, /#exportButton\s*\{[^}]*background:\s*var\(--ui-accent\)/);
+  assert.match(css, /@media \(max-width: 1024px\)[\s\S]*?\.workspace\s*\{[^}]*flex-direction:\s*column/);
+  assert.match(html, /id="actionNote" role="status" aria-live="polite"/);
+  assert.match(html, /<details class="panel-sub">\s*<summary class="sub-kicker">画面<\/summary>/);
+  assert.equal((html.match(/<span class="swatch /g) || []).length, 5);
 });
