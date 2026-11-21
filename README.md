@@ -4,7 +4,7 @@
 
 ## 运行
 
-1. 解压整个目录，保留 `index.html` 和 `assets/grain.svg` 相对路径。
+1. 解压整个目录，保留 `index.html`、`assets/interface.css` 和 `assets/grain.svg` 相对路径。
 2. 双击 `index.html`，在现代浏览器中打开即可，完全不需要服务器、安装依赖或联网。
 3. 若需要本地服务器，可在此目录执行：`python -m http.server 8000`，打开 `http://localhost:8000`。
 
@@ -15,6 +15,8 @@
 - 将鼠标移到海报上，光斑跟随指针。
 - `←`/`→` 或数字 `1`–`5` 快速切换主题；按 `F` 进入/退出沉浸模式；按 `Esc` 退出。
 - 随机按钮会切换到另一张海报。
+- 顶栏月亮/太阳按钮切换明暗界面（仅改变工作台，不改变海报本身）；浏览器允许时会记住选择。
+- 移动端也能操作全部三个材质滑块。
 
 ## 技术实现
 
@@ -22,10 +24,15 @@
 - **颗粒**：SVG feTurbulence 程序化灰度噪声覆盖，`mix-blend-mode:soft-light`。
 - **压印**：SVG 矢量路径和文字，两组方向相反的 `drop-shadow` 形成浅色反光面和暗色切边；全局 `--depth` 控制起伏强弱。
 - **光照**：鼠标位置驱动 CSS 自定义属性，移动 `radial-gradient` 高光。
-- **字体**：ADSTRONAUT 标题为自绘几何矢量字形；其他内容使用系统字体；无外部字体和 JavaScript 依赖。
+- **字体与图标**：ADSTRONAUT 标题为自绘几何矢量字形；界面使用系统字体与内联 Lucide 风格 SVG 图标；无外部字体或 JavaScript 依赖。
+- **界面主题**：`assets/interface.css` 使用语义 Design Tokens 管理浅色和深色工作台；艺术画面样式保留在 `index.html`，不会受主题切换影响。
 - **可访问性**：键盘切换、焦点可见、`prefers-reduced-motion` 支持。
 
 该 Demo 是独立的视觉复现，不包含原图本身，所有压印形状均为网页中可修改的矢量元素。原图包含更细腻的材质物理细节；网页实现是实时渲染的设计近似，而不是逐像素 1:1 复制。
+## 设计规范
+
+参见 [DESIGN.md](DESIGN.md)：界面色彩、排版、间距、状态与交互原则。工作台采用中性的编辑器布局，避免用大面积装饰效果干扰海报本身。
+
 ## 部署到 GitHub Pages
 
 本项目是零构建的静态网页。公开仓库可以在 **Settings → Pages** 中选择 **Deploy from a branch**，分支选 `main`，目录选 `/(root)`，保存后即可通过 GitHub Pages 访问。
