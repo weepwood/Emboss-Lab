@@ -230,11 +230,11 @@
         <aside class="studio-sidebar" aria-label="海报主题、材质与画面编辑">
           <div class="sidebar-intro">
             <h1 class="sidebar-heading">海报工作台</h1>
-            <p class="sidebar-description">选择作品，调节材质、光照与画面细节。</p>
+            <p class="sidebar-description">选择作品，调整材质与光照。</p>
           </div>
           <div class="sidebar-block">
             <div class="section-head">
-              <p class="section-kicker"><span>选择作品</span><span id="sceneCount">01 / 05</span><span class="key-hint" aria-hidden="true">1–5 / ←→</span></p>
+              <p class="section-kicker"><span>作品</span><span id="sceneCount">01 / 05</span><span class="key-hint" aria-hidden="true">1–5 / ←→</span></p>
               <button type="button" class="mini-button" id="sceneMenuToggle" aria-expanded="true" aria-controls="sceneMenu" title="收起作品列表">收起</button>
             </div>
             <div class="scene-menu" id="sceneMenu" role="tablist" aria-label="选择海报场景">
@@ -290,7 +290,7 @@
               </select></label>
               </div>
             </details>
-            <details class="panel-sub" open>
+            <details class="panel-sub">
               <summary class="sub-kicker">画面</summary>
               <div class="sub-body">
               <label class="setting">画面缩放 <output class="setting-value" id="scaleValue">100%</output><input type="range" id="scaleSlider" min="90" max="115" value="100" /></label>
@@ -329,7 +329,7 @@
                 <span>导出图片</span>
               </button>
             </div>
-            <p class="panel-note" id="actionNote">调整会自动保存在本机浏览器。</p>
+            <p class="panel-note" id="actionNote" role="status" aria-live="polite">调整会自动保存在本机浏览器。</p>
           </section>
         </aside>
       </div>
