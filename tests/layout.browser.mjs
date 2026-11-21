@@ -58,7 +58,7 @@ try {
         stage: box('.stage-shell'),
         inspector: box('.studio-sidebar'),
         scenes: [...document.querySelectorAll('.scene-select')].map(el => el.getBoundingClientRect().width),
-        settings: [...document.querySelectorAll('.setting')].map(el => el.getBoundingClientRect().width),
+        settings: [...document.querySelectorAll('.setting')].map(el => el.getBoundingClientRect().width).filter(width => width > 0),
         posterBackground: getComputedStyle(document.querySelector('.poster')).backgroundImage
       };
     });
@@ -73,7 +73,7 @@ try {
     assert.notEqual(positions.posterBackground, 'none', description + ': poster paper did not render');
     assert.ok(positions.scenes.length === 5 && positions.scenes.every(width => width >= 30),
       description + ': sample thumbnails are too narrow');
-    assert.ok(positions.settings.every(width => width >= 190),
+    assert.ok(positions.settings.length >= 5 && positions.settings.every(width => width >= 190),
       description + ': inspector controls may wrap vertically');
     if (viewport.width > 1024) {
       assert.ok(positions.inspector.x >= positions.stage.right - 2,
