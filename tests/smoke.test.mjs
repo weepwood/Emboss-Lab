@@ -79,3 +79,39 @@ test('侧栏承载全部编辑功能，含预设、着色、画面、分享与�
   const header = html.match(/<header class="topbar">[\s\S]*?<\/header>/)[0];
   assert.doesNotMatch(header, /shuffleButton|themeButton|fullscreenButton/);
 });
+
+test('工作台 HTML 结构必须正确嵌套，防止侧栏脱离网格', () => {
+  const markup = html.match(/<main>[\s\S]*?<\/main>/)?.[0];
+  assert.ok(markup, '页面缺少主布局');
+  const stack = [];
+  for (const match of markup.matchAll(/<\/?(?:main|div|aside|section|details)\b[^>]*>/g)) {
+    const closing = match[0].startsWith('</');
+    const tag = match[0].match(/^<\/?([a-z]+)/)[1];
+    if (!closing) {
+      stack.push(tag);
+    } else {
+      assert.equal(stack.pop(), tag, '布局标签嵌套不正确: ' + match[0]);
+    }
+  }
+  assert.deepEqual(stack, [], '存在未闭合的布局标签');
+  assert.equal((markup.match(/<details class="panel-sub"/g) || []).length, 4);
+});
+
+test('从内联样式拆分后仍保留必要的响应式布局基础', () => {
+  const required = {
+    '全局盒模型': /\*,\s*\*::before,\s*\*::after\s*\{[^}]*box-sizing:\s*border-box/,
+    '应用容器': /\.app\s*\{[^}]*display:\s*flex/,
+    '顶栏水平排列': /\.topbar\s*\{[^}]*display:\s*flex/,
+    '品牌水平排列': /\.brand\s*\{[^}]*display:\s*inline-flex/,
+    '主工作区网格': /\.workspace\s*\{[^}]*display:\s*grid/,
+    '设置侧栏纵向布局': /\.studio-sidebar\s*\{[^}]*display:\s*flex/,
+    '作品列表纵向布局': /\.scene-menu\s*\{[^}]*display:\s*flex/,
+    '作品按钮水平布局': /\.scene-select\s*\{[^}]*display:\s*flex/,
+    '作品预览色块': /\.swatch\.dusk\s*\{[^}]*background:/,
+    '窄屏单栏布局': /@media \(max-width: 800px\)[\s\S]*?\.workspace\s*\{[^}]*flex-direction:\s*column/,
+    '退出沉浸模式按钮定位': /\.exit-full\s*\{[^}]*position:\s*fixed/
+  };
+  for (const [name, pattern] of Object.entries(required)) {
+    assert.match(css, pattern, name + ' 的样式缺失');
+  }
+});

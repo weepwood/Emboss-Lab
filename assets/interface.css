@@ -35,6 +35,35 @@
   --ui-paper-shadow: 0 12px 34px rgba(0, 0, 0, .36), 0 1px 5px rgba(0, 0, 0, .2);
   --ui-focus: #a3c5a8;
 }
+/* Structural layout primitives moved out of index.html.
+   Keep these foundations together when changing the inspector UI. */
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; overflow-x: hidden; }
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.app { min-height: 100dvh; display: flex; flex-direction: column; }
+.topbar { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; position: relative; z-index: 5; }
+.brand { display: inline-flex; align-items: center; text-decoration: none; white-space: nowrap; }
+.brand-mark { display: grid; place-items: center; flex: none; }
+.top-actions { display: flex; align-items: center; }
+.icon-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.icon-button svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+main { width: 100%; min-width: 0; flex: 1; justify-content: center; }
+.stage-shell { position: relative; }
+.studio-sidebar { display: flex; flex-direction: column; }
+.scene-menu { display: flex; flex-direction: column; }
+.scene-select { display: flex; align-items: center; text-align: left; background: transparent; }
+.swatch { flex: none; }
+.swatch.dusk { background: linear-gradient(150deg, #aaa2d2, #4c382b); }
+.swatch.forest { background: linear-gradient(150deg, #85ba93, #102218); }
+.swatch.lilac { background: linear-gradient(150deg, #cbb3f2, #8e69ca); }
+.swatch.graphite { background: linear-gradient(150deg, #999, #555); }
+.swatch.neon { background: linear-gradient(150deg, #aa7ce8, #4a1e80); }
+.scene-label { display: grid; min-width: 0; }
+.scene-no { margin-left: auto; }
+.keycap { display: inline-flex; border: 1px solid var(--ui-border); border-radius: 4px; }
+.exit-full { position: fixed; top: 16px; right: 16px; z-index: 50; }
+
 body { background: var(--ui-bg); color: var(--ui-text); font-family: Inter, "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
 button, a, input { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, input:focus-visible {
