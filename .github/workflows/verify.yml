@@ -18,3 +18,27 @@ jobs:
           node-version: '22'
       - name: 验证静态页面
         run: node --test tests/*.test.mjs
+
+  browser-layout:
+    needs: smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 准备 Chromium 测试环境
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: 检查各视口布局与工作台交互
+        run: node tests/layout.browser.mjs
+      - name: 保存桌面与移动端截图
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: emboss-lab-visual-regression
+          path: artifacts/visual
+          if-no-files-found: ignore
+
