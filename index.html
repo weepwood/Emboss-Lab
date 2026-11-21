@@ -341,6 +341,19 @@
         '灰色纸张上的几何徽章与机械装置海报',
         '电光紫背景上的 ADSTRONAUT 技术仪表海报'
       ];
+      const sceneNames = ['黄昏紫金', '深林绿', '丁香紫', '石墨灰', '电光紫'];
+      const themeButton = document.getElementById('themeButton');
+      let savedTheme = 'light';
+      try { savedTheme = localStorage.getItem('emboss-lab-theme') === 'dark' ? 'dark' : 'light'; } catch (_) {}
+      function setTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+        themeButton.setAttribute('aria-pressed', String(theme === 'dark'));
+        themeButton.setAttribute('aria-label', theme === 'dark' ? '切换浅色主题' : '切换深色主题');
+        document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#161a18' : '#f4f4f0';
+        try { localStorage.setItem('emboss-lab-theme', theme); } catch (_) {}
+      }
+      setTheme(savedTheme);
+      themeButton.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
       let current = 0;
       function selectScene(index) {
         current = (index + scenes.length) % scenes.length;
@@ -354,25 +367,45 @@
           el.setAttribute('aria-selected', String(i === current));
           el.tabIndex = i === current ? 0 : -1;
         });
-        count.textContent = '/ ' + String(current + 1).padStart(2,'0') + ' — 05';
+        count.textContent = String(current + 1).padStart(2,'0') + ' / 05';
+        document.getElementById('activeSceneName').textContent = sceneNames[current];
       }
-      tabs.forEach((button, i) => button.addEventListener('click', () => selectScene(i)));
+      tabs.forEach((button, i) => {
+        button.addEventListener('click', () => selectScene(i));
+        button.addEventListener('keydown', event => {
+          let next;
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = i + 1;
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = i - 1;
+          if (event.key === 'Home') next = 0;
+          if (event.key === 'End') next = tabs.length - 1;
+          if (next === undefined) return;
+          event.preventDefault();
+          event.stopPropagation();
+          selectScene(next);
+          tabs[current].focus();
+        });
+      });
       document.getElementById('shuffleButton').addEventListener('click', () => {
         const delta = 1 + Math.floor(Math.random() * (scenes.length - 1));
         selectScene(current + delta);
       });
       function setImmersive(on) {
+        if (document.body.classList.contains('full-bleed') === on) return;
         document.body.classList.toggle('full-bleed', on);
-        document.getElementById('fullscreenButton').setAttribute('aria-pressed', String(on));
+        const trigger = document.getElementById('fullscreenButton');
+        trigger.setAttribute('aria-pressed', String(on));
+        trigger.setAttribute('aria-label', on ? '退出沉浸模式' : '进入沉浸模式');
+        (on ? document.getElementById('exitFullscreenButton') : trigger).focus({preventScroll:true});
       }
       document.getElementById('fullscreenButton').addEventListener('click', () => setImmersive(!document.body.classList.contains('full-bleed')));
       document.getElementById('exitFullscreenButton').addEventListener('click', () => setImmersive(false));
       document.addEventListener('keydown', e => {
-        if (e.target && e.target.tagName === 'INPUT') return;
+        if (e.key === 'Escape') { setImmersive(false); return; }
+        if (e.altKey || e.ctrlKey || e.metaKey) return;
+        if (e.target && e.target.matches('input, textarea, select, [contenteditable]')) return;
         if (e.key === 'ArrowRight') { e.preventDefault(); selectScene(current + 1); }
         if (e.key === 'ArrowLeft') { e.preventDefault(); selectScene(current - 1); }
         if (e.key.toLowerCase() === 'f') setImmersive(!document.body.classList.contains('full-bleed'));
-        if (e.key === 'Escape') setImmersive(false);
         if (/^[1-5]$/.test(e.key)) selectScene(Number(e.key)-1);
       });
       const sliders = [
@@ -386,6 +419,7 @@
         const val = Number(slider.value);
         poster.style.setProperty('--' + variable, transform(val));
         output.textContent = val + '%';
+        slider.style.setProperty('--track-progress', val + '%');
       }
       sliders.forEach(config => {
         document.getElementById(config[1]).addEventListener('input', () => updateSetting(config));
