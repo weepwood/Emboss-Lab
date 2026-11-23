@@ -40,20 +40,20 @@
     .poster[data-scene="2"] { --ink:rgba(75,42,112,.28); --stroke:rgba(77,47,106,.32); --shadow:rgba(71,36,108,.46); --shine:rgba(249,229,255,.49); --bg:radial-gradient(ellipse 89% 63% at 83% 4%,rgba(234,212,255,.80),transparent 87%),linear-gradient(177deg,#c5a9ed 0%,#b99be6 36%,#a582db 70%,#8b64c7 100%);}
     .poster[data-scene="3"] { --ink:rgba(29,29,29,.29); --stroke:rgba(33,33,33,.34); --shadow:rgba(17,17,17,.47); --shine:rgba(250,250,250,.36); --bg:radial-gradient(ellipse 110% 85% at 39% -15%,rgba(217,217,217,.29),transparent 78%),linear-gradient(177deg,#8e8e8e 0%,#777777 45%,#626262 100%);}
     .poster[data-scene="4"] { --ink:rgba(61,27,111,.34); --stroke:rgba(56,18,104,.39); --shadow:rgba(39,15,82,.5); --shine:rgba(227,199,255,.49); --bg:radial-gradient(ellipse 87% 56% at 79% 1%,rgba(209,185,255,.34),transparent 85%),linear-gradient(172deg,#976ede 0%,#9660d5 37%,#8246c3 62%,#4c2082 100%);}
-    .poster::before {content:""; position:absolute; z-index:2; inset:0; pointer-events:none; background-image:url("assets/grain.svg"); background-size:var(--grain-size) var(--grain-size); opacity:var(--grain-opacity); mix-blend-mode:soft-light;}
-    .poster::after {content:""; position:absolute; z-index:3; inset:0; pointer-events:none; background:radial-gradient(circle var(--light-size) at var(--mouse-x, 72%) var(--mouse-y, 12%),rgba(255,255,255,.28),rgba(255,255,255,.055) 48%,transparent 82%); opacity:var(--light-opacity); mix-blend-mode:soft-light; transition:opacity .2s, --mouse-x .2s;}
+    .poster::before {content:""; position:absolute; z-index:2; inset:0; pointer-events:none; background-image:url("assets/grain.svg"); background-size:var(--grain-size) var(--grain-size); opacity:var(--grain-opacity); mix-blend-mode:var(--grain-blend,soft-light);}
+    .poster::after {content:""; position:absolute; z-index:3; inset:0; pointer-events:none; background:radial-gradient(circle var(--light-size) at var(--mouse-x, 72%) var(--mouse-y, 12%),rgba(var(--light-rgb,255,255,255),.28),rgba(var(--light-rgb,255,255,255),.055) 48%,transparent 82%); opacity:var(--light-opacity); mix-blend-mode:soft-light; transition:opacity .2s, --mouse-x .2s;}
     .poster-tint {position:absolute; z-index:3; inset:0; pointer-events:none; background:var(--tint-color, transparent); opacity:var(--tint-opacity, 0); mix-blend-mode:var(--tint-blend, soft-light); transition:opacity .25s ease, background-color .25s ease;}
-    .scene {position:absolute; z-index:1; width:100%;height:100%;inset:0; opacity:0; transform:scale(1.005); scale:var(--scene-scale, 1); pointer-events:none; transition: opacity .42s ease, transform .7s cubic-bezier(.2,.8,.2,1);}
+    .scene {position:absolute; z-index:1; width:100%;height:100%;inset:0; opacity:0; transform:scale(1.005); scale:var(--scene-scale, 1); rotate:var(--scene-rotation,0deg); pointer-events:none; transition: opacity .42s ease, transform .7s cubic-bezier(.2,.8,.2,1);}
     .scene.is-active {opacity:1;transform:scale(1);pointer-events:auto;}
     .scene svg {width:100%;height:100%;display:block;overflow:visible;}
-    .imprint {fill:none;stroke:var(--stroke); stroke-width:1.3;stroke-linejoin:miter;stroke-linecap:square; filter:drop-shadow(calc(1px * var(--depth)) calc(1.2px * var(--depth)) calc(.3px * var(--blur)) var(--shine)) drop-shadow(calc(-.8px * var(--depth)) calc(-.9px * var(--depth)) calc(.35px * var(--blur)) var(--shadow));}
-    .imprint-bold {stroke-width:2.05;}
-    .type {fill:var(--ink);font-family:Arial,Helvetica,sans-serif;font-weight:400;filter:drop-shadow(calc(1px * var(--depth)) calc(1.1px * var(--depth)) calc(.42px * var(--blur)) var(--shine)) drop-shadow(calc(-.9px * var(--depth)) calc(-.8px * var(--depth)) calc(.4px * var(--blur)) var(--shadow));}
+    .imprint {fill:none;stroke:var(--stroke);stroke-width:var(--imprint-stroke,1.3);stroke-linejoin:miter;stroke-linecap:square;filter:drop-shadow(var(--hi-x,1px) var(--hi-y,1.2px) calc(.3px * var(--blur)) var(--shine)) drop-shadow(var(--lo-x,-.8px) var(--lo-y,-.9px) calc(.35px * var(--blur)) var(--shadow));}
+    .imprint-bold {stroke-width:calc(var(--imprint-stroke,1.3) * 1.58);}
+    .type {fill:var(--ink);font-family:Arial,Helvetica,sans-serif;font-weight:400;filter:drop-shadow(var(--hi-x,1px) var(--hi-y,1.2px) calc(.42px * var(--blur)) var(--shine)) drop-shadow(var(--lo-x,-.8px) var(--lo-y,-.9px) calc(.4px * var(--blur)) var(--shadow));}
     .type-tech {font-family:"Courier New",Courier,monospace; font-size:27px;letter-spacing:-1.2px;}
     .type-small {font-size:19px;letter-spacing:-.5px;}
     .type-micro {font-family:Consolas,"Courier New",monospace;font-size:13px;letter-spacing:-.8px;}
     .type-display {font-family:"Arial Narrow","Bahnschrift",Arial,sans-serif;font-weight:700;letter-spacing:-1.8px;}
-    .wordmark {fill:none;stroke:var(--stroke);stroke-width:5.0;stroke-linecap:square;stroke-linejoin:bevel;filter:drop-shadow(calc(1.4px * var(--depth)) calc(1.6px * var(--depth)) calc(.75px * var(--blur)) var(--shine)) drop-shadow(calc(-1px * var(--depth)) calc(-1.1px * var(--depth)) calc(.6px * var(--blur)) var(--shadow));}
+    .wordmark {fill:none;stroke:var(--stroke);stroke-width:var(--wordmark-stroke,5);stroke-linecap:square;stroke-linejoin:bevel;filter:drop-shadow(var(--word-hi-x,1.4px) var(--word-hi-y,1.6px) calc(.75px * var(--blur)) var(--shine)) drop-shadow(var(--word-lo-x,-1px) var(--word-lo-y,-1.1px) calc(.6px * var(--blur)) var(--shadow));}
     .tiny {opacity:.78;}
     .poster-vignette {position:absolute; z-index:3; inset:0; pointer-events:none; background:radial-gradient(ellipse 74% 68% at 50% 46%,transparent 42%,rgba(10,7,14,.82) 100%); opacity:var(--vignette,0); transition:opacity .25s ease;}
     .poster-index {position:absolute; z-index:4; left:16px; bottom:14px; color:rgba(255,255,255,.12); font:500 9px/1.4 ui-monospace,Consolas,monospace;letter-spacing:.08em; pointer-events:none;}
@@ -254,8 +254,11 @@
               <div class="sub-body">
               <label class="setting">浮雕深度 <output class="setting-value" id="depthValue">65%</output><input type="range" id="depthSlider" min="0" max="100" value="65" /></label>
               <label class="setting">边缘柔度 <output class="setting-value" id="blurValue">33%</output><input type="range" id="blurSlider" min="0" max="100" value="33" /></label>
+              <label class="setting">压印方向 <output class="setting-value" id="reliefDirectionValue">45°</output><input type="range" id="reliefDirectionSlider" min="0" max="360" step="5" value="45" /></label>
+              <label class="setting">轮廓强度 <output class="setting-value" id="edgeWeightValue">50%</output><input type="range" id="edgeWeightSlider" min="0" max="100" value="50" /></label>
               <label class="setting">颗粒密度 <output class="setting-value" id="grainValue">47%</output><input type="range" id="grainSlider" min="0" max="100" value="47" /></label>
               <label class="setting">颗粒尺寸 <output class="setting-value" id="grainSizeValue">50%</output><input type="range" id="grainSizeSlider" min="20" max="100" value="50" /></label>
+              <label class="setting"><span>纸纹混合</span><select id="grainBlend" aria-label="纸纹混合模式"><option value="soft-light" selected>柔光</option><option value="overlay">叠加</option><option value="multiply">正片叠底</option><option value="normal">正常</option></select></label>
               </div>
             </details>
             <details class="panel-sub" open>
@@ -263,6 +266,7 @@
               <div class="sub-body">
               <label class="setting">漫反射强度 <output class="setting-value" id="lightValue">58%</output><input type="range" id="lightSlider" min="0" max="100" value="58" /></label>
               <label class="setting">光斑半径 <output class="setting-value" id="lightSizeValue">50%</output><input type="range" id="lightSizeSlider" min="10" max="100" value="50" /></label>
+              <div class="setting color-setting"><span>高光颜色</span><input type="color" id="lightColor" value="#ffffff" aria-label="高光颜色" /></div>
               <label class="toggle-row"><span>跟随指针</span><input type="checkbox" id="followPointer" checked /><span class="toggle-track" aria-hidden="true"><span class="toggle-dot"></span></span></label>
               <div class="manual-light" id="manualLight" hidden>
                 <label class="setting">光源水平 <output class="setting-value" id="lightXValue">72%</output><input type="range" id="lightXSlider" min="0" max="100" value="72" /></label>
@@ -287,6 +291,7 @@
               <summary class="sub-kicker">画面</summary>
               <div class="sub-body">
               <label class="setting">画面缩放 <output class="setting-value" id="scaleValue">100%</output><input type="range" id="scaleSlider" min="90" max="115" value="100" /></label>
+              <label class="setting">画面旋转 <output class="setting-value" id="rotationValue">0°</output><input type="range" id="rotationSlider" min="-12" max="12" value="0" /></label>
               <label class="setting">边缘暗角 <output class="setting-value" id="vignetteValue">0%</output><input type="range" id="vignetteSlider" min="0" max="100" value="0" /></label>
               <label class="setting">画面亮度 <output class="setting-value" id="brightnessValue">100%</output><input type="range" id="brightnessSlider" min="60" max="140" value="100" /></label>
               <label class="setting">画面对比 <output class="setting-value" id="contrastValue">100%</output><input type="range" id="contrastSlider" min="60" max="140" value="100" /></label>
@@ -312,7 +317,8 @@
                 <span>沉浸模式</span>
               </button>
             </div>
-            <div class="action-grid action-grid--two">
+            <label class="export-option"><span>输出尺寸</span><select id="exportSize" aria-label="导出宽度"><option value="1000">1000 px · 标准</option><option value="1676" selected>1676 px · 高清</option><option value="2400">2400 px · 超清</option></select></label>
+             <div class="action-grid action-grid--two">
               <button class="action-button" type="button" id="copyLinkButton" aria-label="复制包含当前设置的链接" title="复制当前作品与参数的链接">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
                 <span>复制链接</span>
@@ -443,17 +449,17 @@
       /* ---- 材质与画面参数 ---- */
       const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
       const DEFAULTS = {
-        depth: 65, blur: 33, grain: 47, grainSize: 50,
-        light: 58, lightSize: 50, lightX: 72, lightY: 12,
+        depth: 65, blur: 33, reliefDirection: 45, edgeWeight: 50, grain: 47, grainSize: 50, grainBlend: 'soft-light',
+        light: 58, lightSize: 50, lightX: 72, lightY: 12, lightColor: '#ffffff',
         tint: 0, tintColor: '#d9c6ff', tintBlend: 'soft-light',
-        scale: 100, vignette: 0,
+        scale: 100, rotation: 0, vignette: 0, exportWidth: 1676,
         brightness: 100, contrast: 100, saturation: 100,
         follow: true
       };
       const PRESETS = {
-        soft:     { depth: 42, blur: 82, grain: 64, grainSize: 80, light: 70, lightSize: 78, vignette: 14 },
-        standard: { depth: 65, blur: 33, grain: 47, grainSize: 50, light: 58, lightSize: 50, vignette: 0 },
-        sharp:    { depth: 92, blur: 2,  grain: 28, grainSize: 26, light: 46, lightSize: 30, vignette: 0 }
+        soft:     { depth: 42, blur: 82, reliefDirection: 45, edgeWeight: 30, grain: 64, grainSize: 80, light: 70, lightSize: 78, vignette: 14 },
+        standard: { depth: 65, blur: 33, reliefDirection: 45, edgeWeight: 50, grain: 47, grainSize: 50, light: 58, lightSize: 50, vignette: 0 },
+        sharp:    { depth: 92, blur: 2,  reliefDirection: 45, edgeWeight: 80, grain: 28, grainSize: 26, light: 46, lightSize: 30, vignette: 0 }
       };
       const SETTINGS_KEY = 'emboss-lab-settings';
       const settings = { ...DEFAULTS };
@@ -462,6 +468,8 @@
       const SLIDERS = [
         ['depth', 'depthSlider', 'depthValue', n => n + '%', n => (n / 65).toFixed(3)],
         ['blur', 'blurSlider', 'blurValue', n => n + '%', n => (0.15 + n / 100 * 2.6).toFixed(2)],
+        ['reliefDirection','reliefDirectionSlider','reliefDirectionValue', n => n + '°', n => n + 'deg'],
+        ['edgeWeight','edgeWeightSlider','edgeWeightValue', n => n + '%', n => n + '%'],
         ['grain', 'grainSlider', 'grainValue', n => n + '%', n => (n / 100 * .8).toFixed(3)],
         ['grainSize', 'grainSizeSlider', 'grainSizeValue', n => Math.round(120 + n * 2.4) + 'px', n => Math.round(120 + n * 2.4) + 'px'],
         ['light', 'lightSlider', 'lightValue', n => n + '%', n => (n / 100 * .7).toFixed(3)],
@@ -470,6 +478,7 @@
         ['lightY', 'lightYSlider', 'lightYValue', n => n + '%', n => n + '%'],
         ['tint', 'tintSlider', 'tintValue', n => n + '%', n => (n / 100).toFixed(3)],
         ['scale', 'scaleSlider', 'scaleValue', n => n + '%', n => (n / 100).toFixed(3)],
+        ['rotation','rotationSlider','rotationValue', n => n + '°', n => n + 'deg'],
         ['vignette', 'vignetteSlider', 'vignetteValue', n => n + '%', n => (n / 100 * .92).toFixed(3)],
         ['brightness', 'brightnessSlider', 'brightnessValue', n => n + '%', n => n + '%'],
         ['contrast', 'contrastSlider', 'contrastValue', n => n + '%', n => n + '%'],
@@ -485,9 +494,22 @@
       const manualLight = document.getElementById('manualLight');
       const tintColor = document.getElementById('tintColor');
       const tintBlend = document.getElementById('tintBlend');
+      const grainBlend = document.getElementById('grainBlend');
+      const lightColor = document.getElementById('lightColor');
+      const exportSize = document.getElementById('exportSize');
+      const EXPORT_WIDTHS = [1000, 1676, 2400];
       const presetButtons = [...document.querySelectorAll('.preset')];
 
       function paint() {
+        const rad = settings.reliefDirection * Math.PI / 180;
+        const x = Math.cos(rad) * Math.SQRT2 * settings.depth / 65;
+        const y = Math.sin(rad) * 1.7 * settings.depth / 65;
+        for (const [name,v] of Object.entries({'--hi-x':x,'--hi-y':y,'--lo-x':-x*.8,'--lo-y':-y*.75,'--word-hi-x':x*1.4,'--word-hi-y':y*1.35,'--word-lo-x':-x,'--word-lo-y':-y})) poster.style.setProperty(name,v.toFixed(3)+'px');
+        poster.style.setProperty('--imprint-stroke', (0.8 + settings.edgeWeight/100).toFixed(2));
+        poster.style.setProperty('--wordmark-stroke', (4 + settings.edgeWeight/50).toFixed(2));
+        poster.style.setProperty('--grain-blend', settings.grainBlend);
+        poster.style.setProperty('--light-rgb', [1,3,5].map(i=>parseInt(settings.lightColor.slice(i,i+2),16)).join(','));
+        poster.style.setProperty('--scene-rotation', settings.rotation+'deg');
         poster.style.setProperty('--depth', settings.depth / 65);
         poster.style.setProperty('--blur', (0.15 + settings.blur / 100 * 2.6).toFixed(2));
         poster.style.setProperty('--grain-opacity', (settings.grain / 100 * .8).toFixed(3));
@@ -506,6 +528,9 @@
         document.getElementById('lightHint').textContent = settings.follow ? '移动指针调整光照' : '光源位置已固定';
         tintColor.value = settings.tintColor;
         tintBlend.value = settings.tintBlend;
+        grainBlend.value = settings.grainBlend;
+        lightColor.value = settings.lightColor;
+        exportSize.value = String(settings.exportWidth);
         followPointer.checked = settings.follow;
         presetButtons.forEach(b => b.classList.toggle('is-active', b.dataset.preset === activePreset));
         presetButtons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.preset === activePreset)));
@@ -583,6 +608,9 @@
         paint();
         saveSettings();
       });
+      grainBlend.addEventListener('change', () => { settings.grainBlend = grainBlend.value; paint(); saveSettings(); });
+      lightColor.addEventListener('input', () => { settings.lightColor = lightColor.value; paint(); saveSettings(); });
+      exportSize.addEventListener('change', () => { settings.exportWidth = Number(exportSize.value); saveSettings(); });
       followPointer.addEventListener('change', () => {
         settings.follow = followPointer.checked;
         paint();
@@ -656,10 +684,8 @@
         }
       });
       document.getElementById('exportButton').addEventListener('click', () => {
-        const rect = poster.getBoundingClientRect();
-        const scale = Math.min(2.5, 1600 / rect.width);
-        const width = Math.round(rect.width * scale);
-        const height = Math.round(rect.height * scale);
+        const width = EXPORT_WIDTHS.includes(settings.exportWidth) ? settings.exportWidth : 1676;
+        const height = Math.round(width * 2048 / 1676);
         const canvas = document.createElement('canvas');
         canvas.width = width; canvas.height = height;
         const ctx = canvas.getContext('2d');
@@ -702,7 +728,7 @@
         const style = document.createElementNS(ns, 'style');
         const computed = getComputedStyle(poster);
         // Artwork-specific custom properties win over the page's :root defaults.
-        for (const name of ['--ink', '--stroke', '--shadow', '--shine', '--depth', '--blur']) {
+        for (const name of ['--ink', '--stroke', '--shadow', '--shine', '--depth', '--blur', '--imprint-stroke', '--wordmark-stroke', '--hi-x', '--hi-y', '--lo-x', '--lo-y', '--word-hi-x', '--word-hi-y', '--word-lo-x', '--word-lo-y']) {
           clone.style.setProperty(name, computed.getPropertyValue(name).trim());
         }
         const cssText = [...document.styleSheets]
@@ -730,11 +756,13 @@
           const raw = params.get(key);
           if (raw === null) continue;
           if (key === 'follow') settings.follow = raw !== 'false';
-          else if (key === 'tintColor') { if (/^#[0-9a-f]{6}$/i.test(raw)) settings[key] = raw; }
+          else if (key === 'tintColor' || key === 'lightColor') { if (/^#[0-9a-f]{6}$/i.test(raw)) settings[key] = raw; }
           else if (key === 'tintBlend') { if (['soft-light', 'overlay', 'multiply', 'screen'].includes(raw)) settings[key] = raw; }
+          else if (key === 'grainBlend') { if (['soft-light','overlay','multiply','normal'].includes(raw)) settings[key] = raw; }
+          else if (key === 'exportWidth') { if (EXPORT_WIDTHS.includes(Number(raw))) settings[key] = Number(raw); }
           else if (!Number.isNaN(Number(raw))) {
             const input = sliderEl[key];
-            settings[key] = clamp(Number(raw), Number(input.min), Number(input.max));
+            if (input) settings[key] = clamp(Number(raw), Number(input.min), Number(input.max));
           }
         }
         activePreset = Object.keys(PRESETS).find(matchesPreset) || 'custom';
