@@ -733,6 +733,7 @@
         if (e.key === 'Escape') { setImmersive(false); setShortcuts(false); return; }
         if (e.altKey || e.ctrlKey || e.metaKey) return;
         if (t && typeof t.matches === 'function' && t.matches('input, textarea, select, [contenteditable], [role="tab"]')) return;
+        if (t?.closest?.('.studio-rail, .canvas-toolbar')) return;
         if (e.key === 'ArrowRight') { e.preventDefault(); selectScene(current + 1); }
         if (e.key === 'ArrowLeft') { e.preventDefault(); selectScene(current - 1); }
         const key = e.key.toLowerCase();
