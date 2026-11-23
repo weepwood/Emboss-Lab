@@ -782,3 +782,10 @@ input[type="range"]::-moz-range-thumb {
   .stage-overline { left: 16px; right: 16px; top: 18px; font-size: 9px; }
   .sidebar-intro, .sidebar-scroll, .sidebar-actions { padding-left: 19px; padding-right: 19px; }
 }
+
+/* 导出尺寸控件与新检查器模块保持一致 */
+.export-option { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--ui-secondary); font-size: 11px; }
+.export-option select { min-height: 32px; width: 190px; max-width: 65%; padding: 0 7px; border: 1px solid var(--ui-border); border-radius: 6px; color: var(--ui-text); background: var(--ui-bg); cursor: pointer; }
+.sidebar-utilities .icon-button svg { width: 17px; height: 17px; }
+.sidebar-scroll::-webkit-scrollbar { width: 6px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { border-radius: 99px; background: var(--ui-border-strong); }
