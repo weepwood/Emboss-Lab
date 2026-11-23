@@ -46,6 +46,11 @@ try {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(origin, { waitUntil: 'load' });
+    // Each workspace pane is separately visible; expand "全部" for geometry checks.
+    assert.equal(await page.locator('.studio-sidebar').getAttribute('data-active-pane'), 'layers',
+      'The default editing workspace should show the layer editor');
+    assert.equal(await page.locator('#compositionAdd').isVisible(), true);
+    await page.locator('[data-studio-pane="all"]').click();
     const positions = await page.evaluate(() => {
       const box = selector => {
         const rect = document.querySelector(selector).getBoundingClientRect();
@@ -84,6 +89,26 @@ try {
     }
     await page.screenshot({ path: resolve(screenshots, description + '.png'), fullPage: true });
     if (viewport.width === 1280) {
+      await page.locator('[data-studio-pane="scenes"]').click();
+      assert.equal(await page.locator('#compositionAdd').isVisible(), false);
+      assert.equal(await page.locator('#sceneMenu').isVisible(), true);
+      await page.locator('[data-studio-pane="layers"]').click();
+      assert.equal(await page.locator('#compositionAdd').isVisible(), true);
+      await page.locator('[data-studio-pane="material"]').click();
+      assert.equal(await page.locator('#depthSlider').isVisible(), true);
+      await page.locator('[data-studio-pane="all"]').click();
+      await page.locator('#canvasNextScene').click();
+      assert.equal(await page.locator('#poster').getAttribute('data-scene'), '1');
+      assert.equal(await page.locator('#canvasSceneIndex').textContent(), '02 / 05');
+      await page.locator('#canvasPrevScene').click();
+      assert.equal(await page.locator('#canvasSceneIndex').textContent(), '01 / 05');
+      await page.locator('#canvasGridToggle').click();
+      assert.equal(await page.locator('.stage-shell').getAttribute('data-show-grid'), 'true');
+      assert.equal(await page.locator('#canvasGridToggle').getAttribute('aria-pressed'), 'true');
+      await page.locator('#canvasPanelToggle').click();
+      assert.equal(await page.locator('.workspace.is-inspector-collapsed').count(), 1);
+      await page.locator('#canvasPanelToggle').click();
+      assert.equal(await page.locator('.workspace.is-inspector-collapsed').count(), 0);
       await page.locator('.scene-select[data-target="2"]').click();
       assert.equal(await page.locator('#poster').getAttribute('data-scene'), '2');
       await page.locator('[data-add-layer="text"]').click();
@@ -111,7 +136,9 @@ try {
       const shareLayers = await page.evaluate(() => window.EmbossComposer.getShareData());
       assert.equal(JSON.parse(shareLayers).length, 2);
       await page.reload();
+      await page.locator('[data-studio-pane="scenes"]').click();
       await page.locator('.scene-select[data-target="2"]').click();
+      await page.locator('[data-studio-pane="all"]').click();
       assert.equal(await page.locator('#compositionSvg [data-layer-id]').count(), 2, 'layers should persist per scene');
       await page.evaluate(() => window.EmbossComposer.applyLayers([{ type: 'star', x: 18, y: 25, color: '#224466' }], { replace: true }));
       assert.equal(await page.locator('#compositionSvg [data-layer-id]').count(), 1, 'AI JSON adapter replaces the current scene safely');
@@ -141,6 +168,7 @@ try {
       assert.equal(await page.locator('#poster').evaluate(el => el.style.getPropertyValue('--scene-rotation')), '7deg');
       await page.locator('#exportSize').selectOption('2400');
       await page.reload();
+      await page.locator('[data-studio-pane="all"]').click();
       assert.equal(await page.locator('#exportSize').inputValue(), '2400');
       await page.locator('#themeButton').click();
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');

@@ -127,7 +127,7 @@
     dom('layerDown').disabled=layers().indexOf(o)===0;
   }
   function render(full=true){renderCanvas();if(full)renderList();syncFields();}
-  function choose(id){selected=layers().some(o=>o.id===id)?id:'';render();if(selected)inform('拖动海报中的元素调整位置，方向键可微调。');}
+  function choose(id){selected=layers().some(o=>o.id===id)?id:'';render();if(selected){window.EmbossStudioUI?.setPane('layers');inform('拖动海报中的元素调整位置，方向键可微调。');}}
   function add(type,init={}){
     if(!types.includes(type))return;
     if(layers().length>=MAX){inform('每张海报最多 24 个图层。');return;}
@@ -158,6 +158,7 @@
     if(e.button!==0)return;const node=e.target.closest('[data-layer-id]');if(!node)return;
     const o=layers().find(o=>o.id===node.dataset.layerId);if(!o)return;
     selected=o.id;drag={id:e.pointerId,start:point(e),x:o.x,y:o.y};
+    window.EmbossStudioUI?.setPane('layers');
     svg.setPointerCapture(e.pointerId);render();e.preventDefault();
   });
   svg.addEventListener('pointermove',e=>{
@@ -184,6 +185,7 @@
   document.addEventListener('keydown',e=>{
     if(!selected||e.altKey||e.ctrlKey||e.metaKey||document.body.classList.contains('full-bleed'))return;
     if(e.target?.matches('input,textarea,select,[contenteditable],[role="tab"]'))return;
+    if(e.target?.closest?.('.studio-rail, .canvas-toolbar'))return;
     if(['Delete','Backspace'].includes(e.key)){e.preventDefault();remove();return;}
     const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
     if(!d)return;
