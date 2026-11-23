@@ -184,6 +184,7 @@
   document.addEventListener('keydown',e=>{
     if(!selected||e.altKey||e.ctrlKey||e.metaKey||document.body.classList.contains('full-bleed'))return;
     if(e.target?.matches('input,textarea,select,[contenteditable],[role="tab"]'))return;
+    if(e.target?.closest?.('.studio-rail, .canvas-toolbar'))return;
     if(['Delete','Backspace'].includes(e.key)){e.preventDefault();remove();return;}
     const d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];
     if(!d)return;
