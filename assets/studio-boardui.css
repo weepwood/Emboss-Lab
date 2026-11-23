@@ -325,3 +325,9 @@ input[type="range"]::-webkit-slider-thumb {
 @media (prefers-reduced-motion: reduce) {
   .workspace, .studio-rail-item, .stage-shell::before { transition: none; }
 }
+
+/* Consistent line icons replace platform-dependent Unicode symbols. */
+.composer-add button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+.composer-add button svg { flex: none; width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.composer-add button span { font-size: 11px; }
+@media (max-width: 350px) { .composer-add button { gap: 4px; } .composer-add button svg { width: 14px; height: 14px; } }
