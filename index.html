@@ -71,24 +71,10 @@
 </head>
 <body>
   <div class="app">
-    <header class="topbar">
-      <a class="brand" href="." aria-label="Emboss Lab 首页">
-        <span class="brand-mark" aria-hidden="true">E</span><span>Emboss Lab</span>
-        <span class="brand-subtitle">浮雕材质实验</span>
-      </a>
-      <div class="top-actions">
-        <a class="icon-button" href="https://github.com/weepwood/Emboss-Lab" aria-label="查看 GitHub 源码（新窗口）" title="GitHub 源码" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3"/><path d="M15 22v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 19 4.77 5.07 5.07 0 0 0 18.91 1S17.73.65 15 2.48a13.38 13.38 0 0 0-7 0C5.27.65 4.09 1 4.09 1A5.07 5.07 0 0 0 4 4.77 5.44 5.44 0 0 0 2.5 8.5c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 8 18.13V22"/></svg>
-        </a>
-        <button class="icon-button" type="button" id="shortcutsButton" aria-label="查看快捷键" aria-expanded="false" aria-controls="shortcutPanel" title="快捷键">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>
-          <span class="button-label">快捷键</span>
-        </button>
-      </div>
-    </header>
+    
     <main>
       <div class="workspace">
-        <div class="stage-shell">
+        <div class="stage-shell"><div class="stage-overline" aria-hidden="true"><span>EMBOSS / PREVIEW</span><span>● 实时预览</span></div>
           <div class="poster" id="poster" data-scene="0" role="img" aria-label="以紫色和棕色的渐变纸面呈现浮雕文字的海报，标题 ADSTRONAUT">
             <!-- Scene 01: Dusk -->
             <section class="scene is-active" data-index="0" aria-hidden="false">
@@ -229,9 +215,16 @@
         </div>
         <aside class="studio-sidebar" aria-label="海报主题、材质与画面编辑">
           <div class="sidebar-intro">
-            <h1 class="sidebar-heading">海报工作台</h1>
-            <p class="sidebar-description">选择作品，调整材质与光照。</p>
+            <div class="sidebar-brandbar">
+              <a class="brand" href="." aria-label="Emboss Lab 首页"><span class="brand-mark" aria-hidden="true">E</span><span class="brand-copy"><strong>Emboss Lab</strong><small>浮雕材质实验室</small></span></a>
+              <div class="sidebar-utilities">
+                <a class="icon-button" href="https://github.com/weepwood/Emboss-Lab" target="_blank" rel="noopener noreferrer" aria-label="查看 GitHub 源码" title="GitHub 源码"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3M15 22v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 19 4.77 5.07 5.07 0 0 0 18.91 1S17.73.65 15 2.48a13.38 13.38 0 0 0-7 0C5.27.65 4.09 1 4.09 1A5.07 5.07 0 0 0 4 4.77 5.44 5.44 0 0 0 2.5 8.5c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 8 18.13V22"/></svg></a>
+                <button class="icon-button" type="button" id="shortcutsButton" aria-label="查看快捷键" aria-expanded="false" aria-controls="shortcutPanel" title="快捷键（?）"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg></button>
+              </div>
+            </div>
+            <p class="sidebar-description">选择海报，调整纸张、浮雕与光照。</p>
           </div>
+          <div class="sidebar-scroll">
           <div class="sidebar-block">
             <div class="section-head">
               <p class="section-kicker"><span>作品</span><span id="sceneCount">01 / 05</span><span class="key-hint" aria-hidden="true">1–5 / ←→</span></p>
@@ -301,9 +294,9 @@
               </div>
             </details>
           </section>
-          <div class="aside-divider"></div>
-          <section class="panel-group" aria-labelledby="actionsHeading">
-            <h2 class="setting-heading" id="actionsHeading">工作台</h2>
+          </div>
+          <section class="sidebar-actions" aria-labelledby="actionsHeading">
+            <div class="sidebar-actions-head"><h2 class="setting-heading" id="actionsHeading">快捷操作</h2><span>自动保存</span></div>
             <div class="action-grid">
               <button class="action-button" type="button" id="shuffleButton" aria-label="随机切换海报" title="随机切换（R）">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 14 4 4-4 4M2 18h4c5 0 7-12 12-12h4m-4-4 4 4-4 4M2 6h4c2.1 0 3.7 2 5 4M14 16c1 1.3 2.3 2 4 2h4"/></svg>
@@ -329,7 +322,7 @@
                 <span>导出图片</span>
               </button>
             </div>
-            <p class="panel-note" id="actionNote" role="status" aria-live="polite">调整会自动保存在本机浏览器。</p>
+            <p class="panel-note" id="actionNote" role="status" aria-live="polite">调整实时生效，并保存在当前浏览器。</p>
           </section>
         </aside>
       </div>
