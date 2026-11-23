@@ -13,6 +13,8 @@ test('页面可离线使用且脚本语法有效', () => {
   assert.doesNotThrow(() => new Function(script));
   assert.match(html, /<script src="assets\/composer\.js"><\/script>/);
   assert.match(html, /href="assets\/composer\.css"/);
+  assert.match(html, /href="assets\/studio-boardui\.css"/);
+  assert.match(html, /<script src="assets\/studio-boardui\.js"><\/script>/);
   assert.doesNotMatch(html, /<script[^>]+src="https?:/);
 });
 
@@ -175,4 +177,31 @@ test('图层模块和样式文件无需构建，并且脚本语法有效', () =>
   assert.match(layerCss, /\.composition-svg/);
   assert.match(layerCss, /\.composition-layer-row/);
   assert.doesNotMatch(js, /\beval\s*\(/);
+});
+
+
+test('BoardUI 风格编辑器保持独立导航、画布工具栏和三组编辑面板', () => {
+  const uiJs = readFileSync(new URL('../assets/studio-boardui.js', import.meta.url), 'utf8');
+  const uiCss = readFileSync(new URL('../assets/studio-boardui.css', import.meta.url), 'utf8');
+  assert.doesNotThrow(() => new Function(uiJs));
+  assert.doesNotMatch(html, /<header class="topbar">/);
+  for (const id of [
+    'inspectorPaneTitle','inspectorPaneDescription','canvasSceneIndex',
+    'canvasPrevScene','canvasNextScene','canvasGridToggle','canvasPanelToggle'
+  ]) {
+    assert.equal((html.match(new RegExp('id="' + id + '"','g')) || []).length, 1, id);
+  }
+  for (const pane of ['scenes', 'layers', 'material', 'all']) {
+    assert.match(html, new RegExp('data-studio-pane="' + pane + '"'));
+  }
+  for (const pane of ['scenes', 'layers', 'material']) {
+    assert.match(html, new RegExp('data-editor-pane="' + pane + '"'));
+  }
+  assert.match(uiCss, /--ui-accent:\s*#337cf3/);
+  assert.match(uiCss, /\.studio-rail-item\.is-active/);
+  assert.match(uiCss, /\.canvas-toolbar\s*\{/);
+  assert.match(uiCss, /@media \(max-width: 1024px\)/);
+  assert.match(uiJs, /new MutationObserver\(updateSceneIndex\)/);
+  assert.match(uiJs, /setPane\('layers'\)/);
+  assert.match(uiJs, /workspace\.classList\.toggle\('is-inspector-collapsed'\)/);
 });
