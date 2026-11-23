@@ -76,8 +76,8 @@ try {
     assert.ok(positions.settings.length >= 5 && positions.settings.every(width => width >= 190),
       description + ': inspector controls may wrap vertically');
     if (viewport.width > 1024) {
-      assert.ok(positions.inspector.x >= positions.stage.right - 2,
-        description + ': inspector should be to the right of canvas');
+      assert.ok(positions.inspector.right <= positions.stage.x + 2,
+        description + ': inspector should be to the left of canvas');
     } else {
       assert.ok(positions.inspector.y >= positions.stage.bottom - 2,
         description + ': inspector should be underneath canvas');
@@ -91,6 +91,27 @@ try {
         input.dispatchEvent(new Event('input', { bubbles: true }));
       });
       assert.equal(await page.locator('#depthValue').textContent(), '84%');
+      await page.locator('#reliefDirectionSlider').evaluate(input => {
+        input.value = '180'; input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      assert.match(await page.locator('#poster').evaluate(el => el.style.getPropertyValue('--hi-x')), /^-/);
+      await page.locator('#edgeWeightSlider').evaluate(input => {
+        input.value = '90'; input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      assert.equal(await page.locator('#poster').evaluate(el => el.style.getPropertyValue('--imprint-stroke')), '1.70');
+      await page.locator('#grainBlend').selectOption('multiply');
+      assert.equal(await page.locator('#poster').evaluate(el => getComputedStyle(el, '::before').mixBlendMode), 'multiply');
+      await page.locator('#lightColor').evaluate(input => {
+        input.value = '#ffeecc'; input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      assert.equal(await page.locator('#poster').evaluate(el => el.style.getPropertyValue('--light-rgb')), '255,238,204');
+      await page.locator('#rotationSlider').evaluate(input => {
+        input.value = '7'; input.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      assert.equal(await page.locator('#poster').evaluate(el => el.style.getPropertyValue('--scene-rotation')), '7deg');
+      await page.locator('#exportSize').selectOption('2400');
+      await page.reload();
+      assert.equal(await page.locator('#exportSize').inputValue(), '2400');
       await page.locator('#themeButton').click();
       assert.equal(await page.locator('html').getAttribute('data-theme'), 'dark');
       await page.locator('#fullscreenButton').click();
