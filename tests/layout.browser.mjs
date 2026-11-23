@@ -58,7 +58,7 @@ try {
         stage: box('.stage-shell'),
         inspector: box('.studio-sidebar'),
         scenes: [...document.querySelectorAll('.scene-select')].map(el => el.getBoundingClientRect().width),
-        settings: [...document.querySelectorAll('.setting')].map(el => el.getBoundingClientRect().width).filter(width => width > 0),
+        settings: [...document.querySelectorAll('.panel-sub .setting')].map(el => el.getBoundingClientRect().width).filter(width => width > 0),
         posterBackground: getComputedStyle(document.querySelector('.poster')).backgroundImage
       };
     });
@@ -86,6 +86,36 @@ try {
     if (viewport.width === 1280) {
       await page.locator('.scene-select[data-target="2"]').click();
       assert.equal(await page.locator('#poster').getAttribute('data-scene'), '2');
+      await page.locator('[data-add-layer="text"]').click();
+      await page.locator('#layerText').fill('可编辑标题');
+      assert.equal(await page.locator('#compositionSvg tspan').last().textContent(), '可编辑标题');
+      assert.equal(await page.locator('#compositionLayers .composition-layer-row').count(), 1);
+      await page.locator('#layerSize').evaluate(el => {
+        el.value = '92'; el.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      assert.equal(await page.locator('#compositionSvg text').last().getAttribute('font-size'), '92');
+      await page.locator('[data-add-layer="rect"]').click();
+      assert.equal(await page.locator('#compositionSvg [data-layer-id]').count(), 2);
+      await page.locator('#layerColor').evaluate(el => {
+        el.value = '#bb7733'; el.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+      assert.ok((await page.locator('#compositionSvg').innerHTML()).includes('#bb7733'));
+      const firstPosition = await page.locator('#compositionSvg [data-layer-id]').last().getAttribute('transform');
+      const coordinates = await page.locator('#compositionSvg [data-layer-id]').last().boundingBox();
+      assert.ok(coordinates && coordinates.width > 0, 'shape must have a drag hitbox');
+      await page.mouse.move(coordinates.x + coordinates.width / 2, coordinates.y + coordinates.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(coordinates.x + coordinates.width / 2 + 26, coordinates.y + coordinates.height / 2 + 18, { steps: 5 });
+      await page.mouse.up();
+      assert.notEqual(await page.locator('#compositionSvg [data-layer-id]').last().getAttribute('transform'), firstPosition);
+      const shareLayers = await page.evaluate(() => window.EmbossComposer.getShareData());
+      assert.equal(JSON.parse(shareLayers).length, 2);
+      await page.reload();
+      await page.locator('.scene-select[data-target="2"]').click();
+      assert.equal(await page.locator('#compositionSvg [data-layer-id]').count(), 2, 'layers should persist per scene');
+      await page.evaluate(() => window.EmbossComposer.applyLayers([{ type: 'star', x: 18, y: 25, color: '#224466' }], { replace: true }));
+      assert.equal(await page.locator('#compositionSvg [data-layer-id]').count(), 1, 'AI JSON adapter replaces the current scene safely');
+
       await page.locator('#depthSlider').evaluate(input => {
         input.value = '84';
         input.dispatchEvent(new Event('input', { bubbles: true }));

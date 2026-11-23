@@ -1,0 +1,94 @@
+/* Emboss Lab · editable composition panel and SVG interaction */
+.composition-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  pointer-events: none;
+  overflow: hidden;
+}
+.composition-svg [data-layer-id] { pointer-events: visiblePainted; touch-action: none; cursor: grab; }
+.composition-svg [data-layer-id]:active { cursor: grabbing; }
+.composition-svg .composition-selection { pointer-events: none !important; filter: none !important; }
+.composer-panel { gap: 11px; }
+.composer-description { margin: 0; color: var(--ui-muted); font-size: 11px; line-height: 1.65; }
+.composer-count { color: var(--ui-muted); font: 500 10px/1 ui-monospace, Consolas, monospace; letter-spacing: .02em; }
+.composer-add { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+.composer-add button, .composer-project-button {
+  min-width: 0; min-height: 35px;
+  padding: 7px 6px; border: 1px solid var(--ui-border);
+  border-radius: 7px; background: var(--ui-bg); color: var(--ui-secondary);
+  font-size: 11px; font-weight: 540;
+  transition: background-color .14s ease, border-color .14s ease, color .14s ease;
+}
+.composer-add button:hover, .composer-project-button:hover {
+  background: var(--ui-selected); border-color: var(--ui-border-strong); color: var(--ui-text);
+}
+.composer-list-head { display: flex; justify-content: space-between; gap: 8px; padding-top: 5px; color: var(--ui-muted); font-size: 10px; }
+.composition-layer-list { display: flex; flex-direction: column; gap: 5px; }
+.composer-empty {
+  margin: 0; padding: 16px 10px; text-align: center;
+  border: 1px dashed var(--ui-border-strong);
+  border-radius: 7px; color: var(--ui-muted); font-size: 11px; line-height: 1.55;
+}
+.composition-layer-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; width: 100%; min-height: 36px;
+  padding: 7px 10px; border: 1px solid var(--ui-border);
+  border-radius: 7px; background: var(--ui-bg); color: var(--ui-secondary);
+  text-align: left; cursor: pointer;
+}
+.composition-layer-row:hover { border-color: var(--ui-border-strong); background: var(--ui-hover); }
+.composition-layer-row.is-selected { color: var(--ui-text); background: var(--ui-selected); border-color: var(--ui-accent); }
+.composition-layer-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; font-weight: 580; }
+.composition-layer-type { flex: none; font-size: 10px; color: var(--ui-muted); }
+.composition-properties {
+  display: flex; flex-direction: column; min-width: 0; gap: 13px;
+  border: 1px solid var(--ui-border); border-radius: 9px;
+  padding: 13px 12px 9px; background: var(--ui-bg);
+}
+.composer-properties-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.composer-properties-head strong {
+  max-width: 130px; overflow: hidden; white-space: nowrap;
+  text-overflow: ellipsis; font-size: 11px; font-weight: 640;
+}
+.composer-layer-actions { display: flex; align-items: center; gap: 4px; }
+.composer-layer-actions button {
+  display: grid; place-items: center; width: 25px; height: 27px;
+  border: 1px solid var(--ui-border); border-radius: 5px;
+  background: var(--ui-surface); color: var(--ui-secondary);
+  font-size: 16px; line-height: 1;
+}
+.composer-layer-actions button:hover:not(:disabled) { color: var(--ui-text); background: var(--ui-hover); }
+.composer-layer-actions #layerRemove:hover { color: #bf4d48; }
+.composer-fields { display: flex; flex-direction: column; gap: 11px; }
+.composer-field-pair { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; min-width: 0; }
+.composer-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 11px; color: var(--ui-secondary); }
+.composer-field textarea, .composer-field select {
+  display: block; width: 100%; min-width: 0;
+  padding: 8px 9px; border: 1px solid var(--ui-border);
+  border-radius: 6px; background: var(--ui-surface); color: var(--ui-text);
+  font-size: 12px; line-height: 1.5;
+}
+.composer-field textarea { min-height: 64px; max-height: 145px; resize: vertical; }
+.composer-field select { min-height: 34px; padding: 0 7px; }
+.composition-properties .setting { margin: 0; font-size: 11px; }
+.composition-properties .setting-value { font-size: 11px; }
+.composition-properties .setting input[type="range"] { margin-top: 5px; margin-bottom: 7px; }
+.composition-properties .toggle-row { margin: 4px 0 0; }
+.composition-properties .color-setting { margin-top: 0; }
+#layerShapeOptions { display: flex; flex-direction: column; gap: 12px; }
+.composer-project-row { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; }
+.composer-project-button { min-height: 34px; }
+.composer-panel .panel-note { font-size: 10px; line-height: 1.5; }
+.composer-ai-note { border-top: 1px solid var(--ui-border); padding-top: 10px; }
+.composer-ai-note summary { cursor: pointer; color: var(--ui-muted); font-size: 11px; }
+.composer-ai-note p { margin: 9px 0 0; color: var(--ui-muted); font-size: 11px; line-height: 1.7; }
+@media (max-width: 450px) {
+  .composer-add button { min-height: 38px; }
+  .composer-properties-head strong { max-width: 110px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .composer-add button, .composer-project-button { transition: none; }
+}

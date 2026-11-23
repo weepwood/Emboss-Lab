@@ -11,7 +11,9 @@ test('页面可离线使用且脚本语法有效', () => {
   const script = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
   assert.ok(script, '缺少页面脚本');
   assert.doesNotThrow(() => new Function(script));
-  assert.doesNotMatch(html, /<script[^>]+src=/);
+  assert.match(html, /<script src="assets\/composer\.js"><\/script>/);
+  assert.match(html, /href="assets\/composer\.css"/);
+  assert.doesNotMatch(html, /<script[^>]+src="https?:/);
 });
 
 test('五组海报场景和必要的控制 ID 保持完整', () => {
@@ -141,4 +143,36 @@ test('新增参数、预览与导出控件都有完整绑定', () => {
   assert.match(html, /--grain-blend/);
   assert.match(html, /--scene-rotation/);
   assert.match(html, /EXPORT_WIDTHS.includes/);
+});
+
+test('图层编辑器存在，并且预览、复制链接与 PNG 合成已接入', () => {
+  for (const id of [
+    'compositionSvg','compositionAdd','compositionLayers','compositionProperties',
+    'compositionSave','compositionOpen','compositionFile','compositionHint',
+    'layerText','layerSize','layerX','layerY','layerAngle','layerOpacity',
+    'layerColor','layerStroke','layerFont','layerWeight','layerOutline','layerEmboss',
+    'layerUp','layerDown','layerDuplicate','layerRemove'
+  ]) {
+    assert.equal((html.match(new RegExp('id="' + id + '"', 'g')) || []).length, 1, id);
+  }
+  for (const kind of ['text','rect','circle','line','star','arrow']) {
+    assert.match(html, new RegExp('data-add-layer="' + kind + '"'));
+  }
+  assert.match(html, /window\.EmbossComposer\?\.onSceneChanged\(current\)/);
+  assert.match(html, /window\.EmbossComposer\?\.getShareData\(\)/);
+  assert.match(html, /window\.EmbossComposer\?\.drawToCanvas/);
+});
+
+test('图层模块和样式文件无需构建，并且脚本语法有效', () => {
+  const js = readFileSync(new URL('../assets/composer.js', import.meta.url), 'utf8');
+  const layerCss = readFileSync(new URL('../assets/composer.css', import.meta.url), 'utf8');
+  assert.doesNotThrow(() => new Function(js));
+  assert.match(js, /window\.EmbossComposer\s*=\s*\{/);
+  assert.match(js, /function sanitize\(/);
+  assert.match(js, /function applyLayers\(/);
+  assert.match(js, /localStorage\.setItem\(KEY/);
+  assert.match(js, /drawToCanvas/);
+  assert.match(layerCss, /\.composition-svg/);
+  assert.match(layerCss, /\.composition-layer-row/);
+  assert.doesNotMatch(js, /\beval\s*\(/);
 });

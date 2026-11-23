@@ -68,6 +68,7 @@
     }
   </style>
   <link rel="stylesheet" href="assets/interface.css" />
+  <link rel="stylesheet" href="assets/composer.css" />
 </head>
 <body>
   <div class="app">
@@ -210,6 +211,7 @@
             <div class="poster-tint" aria-hidden="true"></div>
             <div class="poster-vignette" aria-hidden="true"></div>
             <div class="poster-index" aria-hidden="true">EMBOSS LAB / MATERIAL STUDY — 2026</div>
+            <svg class="composition-svg" id="compositionSvg" viewBox="0 0 1000 1222" aria-hidden="true"></svg>
           </div>
           <div class="stage-meta" aria-live="polite"><strong id="activeSceneName">黄昏紫金</strong><span id="lightHint">移动指针调整光照</span></div>
         </div>
@@ -238,6 +240,65 @@
               <button class="scene-select" role="tab" aria-selected="false" aria-controls="poster" aria-label="电光紫，EXPLORE" data-target="4"><span class="swatch neon"></span><span class="scene-label"><span class="scene-name">电光紫</span><span class="scene-subtitle">EXPLORE</span></span><span class="scene-no">05</span></button>
             </div>
           </div>
+          <div class="aside-divider"></div>
+          <section class="panel-group composer-panel" aria-labelledby="compositionHeading">
+            <div class="panel-head">
+              <h2 class="setting-heading" id="compositionHeading">元素与文字</h2>
+              <span class="composer-count" id="compositionCount">00 / 24</span>
+            </div>
+            <p class="composer-description">添加图层后，在海报上直接拖动，也可精确设置位置。</p>
+            <div class="composer-add" id="compositionAdd" role="group" aria-label="添加设计图层">
+              <button type="button" data-add-layer="text">+ 文字</button>
+              <button type="button" data-add-layer="rect">▭ 矩形</button>
+              <button type="button" data-add-layer="circle">◯ 圆形</button>
+              <button type="button" data-add-layer="line">／ 线条</button>
+              <button type="button" data-add-layer="star">✳ 星形</button>
+              <button type="button" data-add-layer="arrow">→ 箭头</button>
+            </div>
+            <div class="composer-list-head"><span>图层列表 · 上方为顶层</span><span>单击选择</span></div>
+            <div class="composition-layer-list" id="compositionLayers" role="group" aria-label="当前海报图层"></div>
+            <div class="composition-properties" id="compositionProperties" hidden>
+              <div class="composer-properties-head">
+                <strong id="selectedLayerName">已选择图层</strong>
+                <div class="composer-layer-actions">
+                  <button type="button" id="layerUp" title="上移图层" aria-label="上移图层">↑</button>
+                  <button type="button" id="layerDown" title="下移图层" aria-label="下移图层">↓</button>
+                  <button type="button" id="layerDuplicate" title="复制图层" aria-label="复制图层">⧉</button>
+                  <button type="button" id="layerRemove" title="删除图层" aria-label="删除图层">×</button>
+                </div>
+              </div>
+              <div id="layerTextOptions" class="composer-fields">
+                <label class="composer-field">文字内容<textarea id="layerText" rows="2" maxlength="160" placeholder="输入文字，支持换行"></textarea></label>
+                <div class="composer-field-pair">
+                  <label class="composer-field">字体<select id="layerFont"><option value="sans">无衬线</option><option value="serif">衬线</option><option value="mono">等宽</option><option value="display">标题粗体</option></select></label>
+                  <label class="composer-field">字重<select id="layerWeight"><option value="400">常规</option><option value="500">中等</option><option value="600">半粗</option><option value="700">粗体</option><option value="800">特粗</option><option value="900">黑体</option></select></label>
+                </div>
+              </div>
+              <label class="setting">元素尺寸 <output class="setting-value" data-value-for="size">56px</output><input id="layerSize" type="range" min="16" max="320" step="1" /></label>
+              <div class="composer-field-pair">
+                <label class="setting">水平 X <output class="setting-value" data-value-for="x">50%</output><input id="layerX" type="range" min="0" max="100" step=".5" /></label>
+                <label class="setting">垂直 Y <output class="setting-value" data-value-for="y">50%</output><input id="layerY" type="range" min="0" max="100" step=".5" /></label>
+              </div>
+              <label class="setting">旋转角度 <output class="setting-value" data-value-for="angle">0°</output><input id="layerAngle" type="range" min="-180" max="180" step="1" /></label>
+              <label class="setting">图层不透明度 <output class="setting-value" data-value-for="opacity">100%</output><input id="layerOpacity" type="range" min="0" max="100" step="1" /></label>
+              <div class="setting color-setting"><span>图层颜色</span><input id="layerColor" type="color" value="#322a43" aria-label="图层颜色" /></div>
+              <div id="layerShapeOptions">
+                <label class="setting">描边粗细 <output class="setting-value" data-value-for="stroke">5px</output><input id="layerStroke" type="range" min="1" max="25" step="1" /></label>
+                <label class="toggle-row"><span>仅描边显示</span><input id="layerOutline" type="checkbox" /><span class="toggle-track" aria-hidden="true"><span class="toggle-dot"></span></span></label>
+              </div>
+              <label class="toggle-row"><span>添加浮雕阴影</span><input id="layerEmboss" type="checkbox" checked /><span class="toggle-track" aria-hidden="true"><span class="toggle-dot"></span></span></label>
+            </div>
+            <div class="composer-project-row">
+              <button type="button" class="composer-project-button" id="compositionOpen">打开工程</button>
+              <button type="button" class="composer-project-button" id="compositionSave">保存工程</button>
+              <input id="compositionFile" type="file" accept=".json,application/json" hidden aria-label="选择图层工程 JSON" />
+            </div>
+            <p class="panel-note" id="compositionHint" role="status" aria-live="polite">图层按当前作品分别保存。支持 JSON 工程导入与导出。</p>
+            <details class="composer-ai-note">
+              <summary>未来：AI 辅助设计接入</summary>
+              <p>AI 将输出经过验证的图层 JSON，经用户确认后添加到当前海报。需要单独配置服务端或符合条件的 ChatGPT 授权，当前版本不会上传任何素材。</p>
+            </details>
+          </section>
           <div class="aside-divider"></div>
           <section class="panel-group" aria-labelledby="materialHeading">
             <div class="panel-head">
@@ -388,6 +449,7 @@
         });
         count.textContent = String(current + 1).padStart(2,'0') + ' / 05';
         document.getElementById('activeSceneName').textContent = sceneNames[current];
+        window.EmbossComposer?.onSceneChanged(current);
       }
       tabs.forEach((button, i) => {
         button.addEventListener('click', () => selectScene(i));
@@ -671,6 +733,8 @@
         for (const key of Object.keys(DEFAULTS)) {
           if (settings[key] !== DEFAULTS[key]) params.set(key, String(settings[key]));
         }
+        const layers = window.EmbossComposer?.getShareData();
+        if (layers) params.set('layers', layers);
         return location.href.split(/[?#]/)[0] + '?' + params.toString();
       }
       document.getElementById('copyLinkButton').addEventListener('click', async () => {
@@ -720,7 +784,13 @@
           ctx.fillStyle = grad;
           ctx.fillRect(0, 0, width, height);
         };
-        if (!svg) { paintBackdrop(); done(); return; }
+        const complete = () => {
+          const painter = window.EmbossComposer?.drawToCanvas;
+          if (!painter) { done(); return; }
+          Promise.resolve().then(() => painter(ctx, width, height))
+            .then(done, () => flashNote('导出失败：图层无法合成，请检查素材。'));
+        };
+        if (!svg) { paintBackdrop(); complete(); return; }
         const clone = svg.cloneNode(true);
         clone.removeAttribute('class');
         clone.setAttribute('width', String(width));
@@ -739,8 +809,8 @@
         clone.insertBefore(style, clone.firstChild);
         const svgText = new XMLSerializer().serializeToString(clone);
         const image = new Image();
-        image.onload = () => { paintBackdrop(); ctx.drawImage(image, 0, 0, width, height); done(); };
-        image.onerror = () => { paintBackdrop(); done(); };
+        image.onload = () => { paintBackdrop(); ctx.drawImage(image, 0, 0, width, height); complete(); };
+        image.onerror = () => { paintBackdrop(); complete(); };
         image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
       });
 
@@ -806,5 +876,6 @@
       selectScene(startScene);
     })();
   </script>
+  <script src="assets/composer.js"></script>
 </body>
 </html>
