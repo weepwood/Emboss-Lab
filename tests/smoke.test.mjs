@@ -50,8 +50,9 @@ test('控制按钮有可访问标签和键盘处理', () => {
   }
 });
 
-test('快捷键不再占用页脚，改为顶栏浮层；材质预设与本地保存可用', () => {
+test('快捷键迁入侧栏浮层；材质预设与本地保存可用', () => {
   assert.doesNotMatch(html, /<footer[\s\S]*?keycap[\s\S]*?切换作品/);
+  assert.doesNotMatch(html, /<header class="topbar">/);
   assert.match(html, /id="shortcutsButton"[^>]*aria-expanded="false"[^>]*aria-controls="shortcutPanel"/);
   assert.match(html, /id="shortcutPanel"[^>]*hidden/);
   for (const preset of ['soft', 'standard', 'sharp']) {
@@ -75,9 +76,9 @@ test('侧栏承载全部编辑功能，含预设、着色、画面、分享与�
   assert.match(html, /--vignette/);
   assert.match(html, /--grain-size/);
   assert.match(html, /--scene-scale/);
-  // 顶栏不再放置切换作品的按钮
-  const header = html.match(/<header class="topbar">[\s\S]*?<\/header>/)[0];
-  assert.doesNotMatch(header, /shuffleButton|themeButton|fullscreenButton/);
+  assert.match(sidebar, /class="sidebar-scroll"/);
+  assert.match(sidebar, /class="sidebar-actions"/);
+  assert.match(sidebar, /id="exportSize"/);
 });
 
 test('工作台 HTML 结构必须正确嵌套，防止侧栏脱离网格', () => {
@@ -101,7 +102,6 @@ test('从内联样式拆分后仍保留必要的响应式布局基础', () => {
   const required = {
     '全局盒模型': /\*,\s*\*::before,\s*\*::after\s*\{[^}]*box-sizing:\s*border-box/,
     '应用容器': /\.app\s*\{[^}]*display:\s*flex/,
-    '顶栏水平排列': /\.topbar\s*\{[^}]*display:\s*flex/,
     '品牌水平排列': /\.brand\s*\{[^}]*display:\s*inline-flex/,
     '主工作区网格': /\.workspace\s*\{[^}]*display:\s*grid/,
     '设置侧栏纵向布局': /\.studio-sidebar\s*\{[^}]*display:\s*flex/,
@@ -117,13 +117,28 @@ test('从内联样式拆分后仍保留必要的响应式布局基础', () => {
 });
 
 
-test('新工作台采用双区布局、紧凑色卡和统一的主操作层级', () => {
-  assert.match(css, /--ui-inspector-width:\s*360px/);
-  assert.match(css, /\.workspace\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+var\(--ui-inspector-width\)/);
+test('无顶栏工作台采用左侧检查器与紧凑色卡', () => {
+  assert.match(css, /--ui-inspector-width:\s*344px/);
+  assert.match(css, /\.workspace\s*\{[^}]*grid-template-columns:\s*var\(--ui-inspector-width\)\s+minmax\(0,\s*1fr\)/);
   assert.match(css, /\.scene-menu\s*\{[^}]*grid-template-columns:\s*repeat\(5,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(css, /#exportButton\s*\{[^}]*background:\s*var\(--ui-accent\)/);
   assert.match(css, /@media \(max-width: 1024px\)[\s\S]*?\.workspace\s*\{[^}]*flex-direction:\s*column/);
   assert.match(html, /id="actionNote" role="status" aria-live="polite"/);
   assert.match(html, /<details class="panel-sub">\s*<summary class="sub-kicker">画面<\/summary>/);
   assert.equal((html.match(/<span class="swatch /g) || []).length, 5);
+});
+
+test('新增参数、预览与导出控件都有完整绑定', () => {
+  assert.doesNotMatch(html, /<header class="topbar">/);
+  assert.match(css, /\.stage-shell\s*\{[^}]*grid-column:\s*2/);
+  assert.match(css, /\.studio-sidebar\s*\{[^}]*grid-column:\s*1/);
+  for (const id of ['reliefDirectionSlider', 'edgeWeightSlider', 'grainBlend', 'lightColor', 'rotationSlider', 'exportSize']) {
+    assert.equal((html.match(new RegExp('id="' + id + '"', 'g')) || []).length, 1, id);
+  }
+  for (const key of ['reliefDirection', 'edgeWeight', 'grainBlend', 'lightColor', 'rotation', 'exportWidth']) {
+    assert.match(html, new RegExp(key + ':'));
+  }
+  assert.match(html, /--grain-blend/);
+  assert.match(html, /--scene-rotation/);
+  assert.match(html, /EXPORT_WIDTHS.includes/);
 });
